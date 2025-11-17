@@ -1,0 +1,156 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: #f5f5f5;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.input-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input:focus {
+    border-color: #4a90e2;
+}
+
+.input-like-div {
+    flex: 1;
+    padding: 10px 15px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    min-height: 20px;
+    background: white;
+    cursor: text;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+}
+
+.input-like-div:focus {
+    border-color: #4a90e2;
+}
+
+.input-like-div[data-placeholder]:empty::before {
+    content: attr(data-placeholder);
+    color: #999;
+    pointer-events: none;
+}
+
+.test-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.test-section h2 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 18px;
+}
+
+.test-section .btn {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.btn:hover {
+    background: #357abd;
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: white;
+}
+
+.tag-blue {
+    background: #4a90e2;
+}
+
+.tag-green {
+    background: #27ae60;
+}
+
+.tag-purple {
+    background: #9b59b6;
+}
+
+.tag-orange {
+    background: #e67e22;
+}
+
+.tag-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.tag-close:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
