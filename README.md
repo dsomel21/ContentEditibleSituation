@@ -32,6 +32,9 @@ That was the first thing I tried:
 
 I will add an explanation here later (I can't remember all the details), but... this was causing a LOT of headaches. Things like, caret jumping to the beginning, text inside the `div contenteditible` doubling up, etc.
 
+https://github.com/user-attachments/assets/4e8cc9c6-2378-43fe-ad82-aeb64cff21de
+
+
 ## Local Testing
 
 ### Prerequisites
