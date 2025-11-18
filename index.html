@@ -1,46 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quick React/Vue Playground</title>
-  <link rel="stylesheet" href="style.css">
+  <!-- React from CDN -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <style>
+    #react-app {
+      margin-bottom: 40px;
+    }
+  </style>
 </head>
-
 <body>
-  <h2>React Example</h2>
   <div id="react-app"></div>
-
-  <h2>Vue Example</h2>
   <div id="vue-app"></div>
 
-  <script>
-    // Load react.js and transform it with Babel
-    fetch('react.js')
-      .then(response => response.text())
-      .then(code => {
-        const transformed = Babel.transform(code, { presets: ['react'] }).code;
-        const script = document.createElement('script');
-        script.textContent = transformed;
-        document.body.appendChild(script);
-      })
-      .catch(err => console.error('Error loading react.js:', err));
+  <!-- Load React app -->
+  <script type="text/babel" src="/react.js"></script>
 
-    // Load vue.js
-    fetch('vue.js')
-      .then(response => response.text())
-      .then(code => {
-        const script = document.createElement('script');
-        script.textContent = code;
-        document.body.appendChild(script);
-      })
-      .catch(err => console.error('Error loading vue.js:', err));
-  </script>
+  <!-- Load Vue SFC app -->
+  <script type="module" src="/src/main.js"></script>
 </body>
-
 </html>

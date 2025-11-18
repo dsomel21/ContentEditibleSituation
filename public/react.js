@@ -1,26 +1,50 @@
 const { useState, useRef, useEffect } = React;
 
-// Helper function to convert camelCase to "Title Case"
-function toTitleCase(str) {
-  return str
-    .replace(/([A-Z])/g, ' $1')
-    .replace(/^./, (char) => char.toUpperCase())
-    .trim();
+// Tag name mapping
+const TAG_NAMES = {
+  firstName: 'First Name',
+  lastName: 'Last Name',
+  email: 'Email Address'
+};
+
+// Popover Component
+function Popover({ isOpen, onClose, tagValue, tagName, fallbackValue, onFallbackChange }) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="popover-overlay" onClick={onClose}>
+      <div className="popover" onClick={(e) => e.stopPropagation()}>
+        <h4>Set fallback for {tagName}</h4>
+        <input
+          type="text"
+          className="popover-input"
+          placeholder="Enter fallback value"
+          value={fallbackValue}
+          onChange={(e) => onFallbackChange(tagValue, e.target.value)}
+          autoFocus
+        />
+        <button className="btn" onClick={onClose}>Close</button>
+      </div>
+    </div>
+  );
 }
 
 // Tag Component
-function Tag({ value, isClosable = false, onClose, onClick }) {
+function Tag({ value, fallback, isClosable = false, onClose, onClick }) {
+  const tagName = TAG_NAMES[value] || value;
+  const displayValue = fallback ? `${tagName} | ${fallback}` : tagName;
+
   return (
-    <span 
-      className="tag tag-blue" 
+    <span
+      className="tag tag-blue"
       onClick={(e) => { e.stopPropagation(); onClick?.(); }}
       style={{ cursor: 'pointer' }}
       contentEditable={false}
     >
-      {toTitleCase(value)}
+      {displayValue}
       {isClosable && (
-        <button 
-          className="tag-close" 
+        <button
+          className="tag-close"
           onClick={(e) => { e.stopPropagation(); e.preventDefault(); onClose?.(); }}
           contentEditable={false}
         >
@@ -32,7 +56,7 @@ function Tag({ value, isClosable = false, onClose, onClick }) {
 }
 
 // Input-like Div Component
-function InputLikeDiv({ placeholder, value, onChange }) {
+function InputLikeDiv({ placeholder, value, onChange, fallbacks, onTagClick }) {
   const divRef = useRef(null);
   const isUpdatingRef = useRef(false);
   const tagRootsRef = useRef([]);
@@ -83,9 +107,10 @@ function InputLikeDiv({ placeholder, value, onChange }) {
         root.render(
           <Tag
             value={part.name}
+            fallback={fallbacks?.[part.name]}
             isClosable={true}
             onClose={() => onChange(value.replace(new RegExp(`\\{\\{${part.name}\\}\\}`, 'g'), ''))}
-            onClick={() => alert(`Clicked on ${toTitleCase(part.name)}`)}  
+            onClick={() => onTagClick?.(part.name)}
           />
         );
       } else {
@@ -158,16 +183,77 @@ function InputLikeDiv({ placeholder, value, onChange }) {
 // Example App
 function App() {
   const [inputValue, setInputValue] = useState('');
+  const [fallbacks, setFallbacks] = useState({
+    firstName: '',
+    lastName: '',
+    email: ''
+  });
+  const [popoverState, setPopoverState] = useState({ isOpen: false, tagValue: null });
+
+  const handleTagClick = (tagValue) => {
+    setPopoverState({ isOpen: true, tagValue });
+  };
+
+  const handleTagClose = (tagName, tagValue) => {
+    const newValue = inputValue.replace(new RegExp(`\\{\\{${tagValue}\\}\\}`, 'g'), '');
+    setInputValue(newValue);
+  };
+
+  const handleFallbackChange = (tagValue, newFallback) => {
+    setFallbacks(prev => ({ ...prev, [tagValue]: newFallback }));
+  };
+
+  const closePopover = () => {
+    setPopoverState({ isOpen: false, tagValue: null });
+  };
 
   return (
     <div className="container">
       <h1>Quick React Playground</h1>
 
+      <Popover
+        isOpen={popoverState.isOpen}
+        onClose={closePopover}
+        tagValue={popoverState.tagValue}
+        tagName={TAG_NAMES[popoverState.tagValue]}
+        fallbackValue={fallbacks[popoverState.tagValue] || ''}
+        onFallbackChange={handleFallbackChange}
+      />
+
+      <div className="tags-demo">
+        <h3>Test Tags:</h3>
+        <div className="tags-container">
+          <Tag
+            value="firstName"
+            fallback={fallbacks.firstName}
+            isClosable={true}
+            onClick={() => handleTagClick('firstName')}
+            onClose={() => handleTagClose('First Name', 'firstName')}
+          />
+          <Tag
+            value="lastName"
+            fallback={fallbacks.lastName}
+            isClosable={true}
+            onClick={() => handleTagClick('lastName')}
+            onClose={() => handleTagClose('Last Name', 'lastName')}
+          />
+          <Tag
+            value="email"
+            fallback={fallbacks.email}
+            isClosable={true}
+            onClick={() => handleTagClick('email')}
+            onClose={() => handleTagClose('Email Address', 'email')}
+          />
+        </div>
+      </div>
+
       <div className="input-section">
         <InputLikeDiv
-          placeholder="Type something like: hello {{firstName}}"
+          placeholder="Type something like: Hello {{firstName}}"
           value={inputValue}
           onChange={setInputValue}
+          fallbacks={fallbacks}
+          onTagClick={handleTagClick}
         />
       </div>
     </div>

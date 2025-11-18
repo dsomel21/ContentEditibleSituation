@@ -1,63 +1,29 @@
-// Helper function to convert camelCase to "Title Case"
-function toTitleCase(str) {
-  return str
-    .replace(/([A-Z])/g, ' $1')
-    .replace(/^./, (char) => char.toUpperCase())
-    .trim();
-}
+<template>
+  <div
+    ref="div"
+    class="input-like-div"
+    contenteditable
+    @input="handleInput"
+    @keydown="handleKeyDown"
+    :data-placeholder="!value || !value.trim() ? placeholder : ''"
+  />
+</template>
 
-// Tag Component
-Vue.component('Tag', {
-  props: {
-    value: String,
-    isClosable: {
-      type: Boolean,
-      default: false
-    }
-  },
-  methods: {
-    handleClick(e) {
-      e.stopPropagation();
-      this.$emit('click');
-    },
-    handleClose(e) {
-      e.stopPropagation();
-      e.preventDefault();
-      this.$emit('close');
-    }
-  },
-  template: `
-    <span 
-      class="tag tag-blue" 
-      @click="handleClick"
-      :style="{ cursor: 'pointer' }"
-      contenteditable="false"
-    >
-      {{ titleCaseValue }}
-      <button 
-        v-if="isClosable"
-        class="tag-close" 
-        @click="handleClose"
-        contenteditable="false"
-      >
-        ×
-      </button>
-    </span>
-  `,
-  computed: {
-    titleCaseValue() {
-      return toTitleCase(this.value);
-    }
-  }
-});
+<script>
+import Vue from 'vue'
+import Tag from './Tag.vue'
 
-// Input-like Div Component
-Vue.component('InputLikeDiv', {
+export default {
+  name: 'InputLikeDiv',
   props: {
     placeholder: String,
     value: {
       type: String,
       default: ''
+    },
+    fallbacks: {
+      type: Object,
+      default: () => ({})
     }
   },
   data() {
@@ -83,14 +49,12 @@ Vue.component('InputLikeDiv', {
     }
   },
   beforeDestroy() {
-    // Cleanup Vue instances
     this.tagInstances.forEach(instance => {
       instance.$destroy();
     });
     this.tagInstances = [];
   },
   methods: {
-    // Parse value into text and variable parts
     parseValue(val) {
       if (!val) return [];
       const parts = [];
@@ -113,11 +77,9 @@ Vue.component('InputLikeDiv', {
       return parts.length ? parts : [{ type: 'text', content: val }];
     },
 
-    // Render value with Tags
     renderValue(val) {
       if (!this.$refs.div) return;
 
-      // Cleanup old Vue instances
       this.tagInstances.forEach(instance => {
         instance.$destroy();
       });
@@ -134,12 +96,12 @@ Vue.component('InputLikeDiv', {
           container.contentEditable = false;
           this.$refs.div.appendChild(container);
 
-          // Create Vue instance for Tag component
           const TagComponent = Vue.extend({
             components: { Tag },
             template: `
               <Tag
                 :value="tagValue"
+                :fallback="fallbackValue"
                 :isClosable="true"
                 @close="handleClose"
                 @click="handleClick"
@@ -147,7 +109,8 @@ Vue.component('InputLikeDiv', {
             `,
             data() {
               return {
-                tagValue: part.name
+                tagValue: part.name,
+                fallbackValue: self.fallbacks[part.name] || ''
               };
             },
             methods: {
@@ -155,7 +118,7 @@ Vue.component('InputLikeDiv', {
                 self.handleRemovingDynamicVariable(part.name);
               },
               handleClick() {
-                alert('Clicked on ' + toTitleCase(part.name));
+                self.$emit('tag-click', part.name);
               }
             }
           });
@@ -169,6 +132,14 @@ Vue.component('InputLikeDiv', {
       });
     },
 
+    toTitleCase(str) {
+      if (!str) return '';
+      return str
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^./, (char) => char.toUpperCase())
+        .trim();
+    },
+
     handleRemovingDynamicVariable(variableName) {
       const regex = new RegExp(`\\{\\{${variableName}\\}\\}`, 'g');
       const newValue = this.value.replace(regex, '');
@@ -177,16 +148,14 @@ Vue.component('InputLikeDiv', {
 
     handleInput(e) {
       if (this.isUpdating) return;
-      
-      // Read current content
+
       let newValue = '';
       const childNodes = Array.from(e.target.childNodes);
-      const hasTags = childNodes.some(node => 
+      const hasTags = childNodes.some(node =>
         node.nodeType === Node.ELEMENT_NODE && node.hasAttribute('data-variable')
       );
-      
+
       if (hasTags) {
-        // Reconstruct: convert Tags back to {{variable}} format
         childNodes.forEach((node) => {
           if (node.nodeType === Node.TEXT_NODE) {
             newValue += node.textContent;
@@ -195,18 +164,15 @@ Vue.component('InputLikeDiv', {
           }
         });
       } else {
-        // No Tags - user is typing, just read text directly
         newValue = e.target.textContent || '';
       }
-      
-      // Only update if different - let watch handle rendering Tags
+
       if (newValue !== this.value) {
         this.$emit('input', newValue);
       }
     },
 
     handleKeyDown(e) {
-      // TODO: Handle Backspace/Delete on Tags more gracefully
       if ((e.key === 'Backspace' || e.key === 'Delete') && e.target.hasAttribute?.('data-variable')) {
         e.preventDefault();
         const variableName = e.target.getAttribute('data-variable');
@@ -214,36 +180,6 @@ Vue.component('InputLikeDiv', {
         this.$emit('input', this.value.replace(regex, ''));
       }
     }
-  },
-  template: `
-    <div
-      ref="div"
-      class="input-like-div"
-      contenteditable
-      @input="handleInput"
-      @keydown="handleKeyDown"
-      :data-placeholder="!value || !value.trim() ? placeholder : ''"
-    />
-  `
-});
-
-// Example App
-new Vue({
-  el: '#vue-app',
-  data: {
-    inputValue: ''
-  },
-  template: `
-    <div class="container">
-      <h1>Quick Vue Playground</h1>
-
-      <div class="input-section">
-        <InputLikeDiv
-          placeholder="Type something like: hello {{firstName}}"
-          :value="inputValue"
-          @input="inputValue = $event"
-        />
-      </div>
-    </div>
-  `
-});
+  }
+}
+</script>
