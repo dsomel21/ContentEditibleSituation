@@ -4,6 +4,18 @@
     box-sizing: border-box;
 }
 
+/* Smooth transitions for responsive changes */
+.container,
+.main-content,
+.left-panel,
+.right-panel,
+h1,
+.tag,
+.input-like-div,
+.state-display {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background: #f5f5f5;
@@ -11,17 +23,39 @@ body {
 }
 
 .container {
-    max-width: 600px;
+    width: 100%;
+    max-width: 1400px;
     margin: 0 auto;
     background: white;
-    padding: 30px;
+    padding: clamp(16px, 3vw, 30px);
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
-    margin-bottom: 30px;
+    margin: 0 0 20px 0;
     color: #333;
+    font-weight: 600;
+}
+
+.react-brand {
+    color: #61DAFB;
+    font-weight: 700;
+    background: linear-gradient(135deg, #61DAFB 0%, #4FA8C5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 10px rgba(97, 218, 251, 0.3);
+}
+
+.vue-brand {
+    color: #42B883;
+    font-weight: 700;
+    background: linear-gradient(135deg, #42B883 0%, #35495E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 10px rgba(66, 184, 131, 0.3);
 }
 
 .input-section {
@@ -114,6 +148,7 @@ h1 {
 }
 
 .tags-demo h3 {
+    margin-top: 0;
     margin-bottom: 10px;
     color: #666;
     font-size: 16px;
@@ -204,4 +239,236 @@ h1 {
 .popover-input:focus {
     outline: none;
     border-color: #4a90e2;
+}
+
+.main-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+}
+
+.left-panel {
+    flex: 1;
+    min-width: 0;
+    max-width: 550px;
+}
+
+.right-panel {
+    flex: 1;
+    min-width: 400px;
+    max-width: 450px;
+}
+
+.right-panel h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #666;
+    font-size: 16px;
+}
+
+.state-display {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 15px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-x: auto;
+    max-height: 600px;
+    overflow-y: auto;
+    font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+}
+
+.state-display code {
+    color: #d4d4d4;
+}
+
+/* Responsive Grid System - 10x Engineering */
+
+/* Large Desktop (1200px+) */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1400px;
+    }
+
+    .left-panel {
+        max-width: 600px;
+    }
+
+    .right-panel {
+        max-width: 500px;
+    }
+}
+
+/* Desktop (992px - 1199px) */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .container {
+        max-width: 100%;
+        padding: clamp(20px, 2.5vw, 30px);
+    }
+
+    .left-panel {
+        max-width: 550px;
+    }
+
+    .right-panel {
+        max-width: 450px;
+    }
+
+    h1 {
+        font-size: clamp(1.75rem, 3vw, 2.5rem);
+    }
+}
+
+/* Tablet Landscape (768px - 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+    .container {
+        max-width: 100%;
+        padding: 20px;
+    }
+
+    .main-content {
+        gap: 16px;
+    }
+
+    .left-panel {
+        max-width: 100%;
+        flex: 1 1 45%;
+    }
+
+    .right-panel {
+        max-width: 100%;
+        flex: 1 1 45%;
+        min-width: 300px;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+        margin-bottom: 16px;
+    }
+
+    .state-display {
+        font-size: 12px;
+        max-height: 400px;
+    }
+}
+
+/* Tablet Portrait (576px - 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+    .container {
+        padding: 16px;
+    }
+
+    .main-content {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .left-panel,
+    .right-panel {
+        width: 100%;
+        max-width: 100%;
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
+    .right-panel {
+        min-width: 100%;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 14px;
+    }
+
+    .tags-container {
+        gap: 8px;
+    }
+
+    .state-display {
+        font-size: 11px;
+        max-height: 300px;
+        width: 100%;
+    }
+}
+
+/* Mobile (up to 575px) */
+@media (max-width: 575px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 16px;
+        border-radius: 6px;
+    }
+
+    .main-content {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .left-panel,
+    .right-panel {
+        width: 100%;
+        max-width: 100%;
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
+    .right-panel {
+        min-width: 100%;
+    }
+
+    h1 {
+        font-size: 1.25rem;
+        margin-bottom: 12px;
+    }
+
+    .tags-demo h3,
+    .right-panel h3 {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .tags-container {
+        gap: 6px;
+    }
+
+    .tag {
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+
+    .input-like-div {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+
+    .state-display {
+        font-size: 11px;
+        padding: 12px;
+        max-height: 350px;
+        width: 100%;
+    }
+
+    .right-panel h3 {
+        font-size: 13px;
+    }
+}
+
+/* Ultra-wide (1600px+) */
+@media (min-width: 1600px) {
+    .container {
+        max-width: 1600px;
+    }
+
+    .left-panel {
+        max-width: 700px;
+    }
+
+    .right-panel {
+        max-width: 550px;
+    }
 }
