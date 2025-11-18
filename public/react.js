@@ -122,7 +122,7 @@ function InputLikeDiv({ placeholder, value, onChange, fallbacks, onTagClick }) {
   // Update DOM when value changes - but only if it contains {{variable}} patterns
   useEffect(() => {
     if (!isUpdatingRef.current && divRef.current && /\{\{\w+\}\}/.test(value)) {
-      renderValue(value);
+      renderValue(value, fallbacks);
     }
   }, [value]);
 
@@ -207,10 +207,15 @@ function App() {
     setPopoverState({ isOpen: false, tagValue: null });
   };
 
+  // Create JSON state for display
+  const stateJSON = JSON.stringify({
+    inputValue,
+    fallbacks,
+    popoverState
+  }, null, 2);
+
   return (
     <div className="container">
-      <h1>Quick React Playground</h1>
-
       <Popover
         isOpen={popoverState.isOpen}
         onClose={closePopover}
@@ -220,41 +225,52 @@ function App() {
         onFallbackChange={handleFallbackChange}
       />
 
-      <div className="tags-demo">
-        <h3>Test Tags:</h3>
-        <div className="tags-container">
-          <Tag
-            value="firstName"
-            fallback={fallbacks.firstName}
-            isClosable={true}
-            onClick={() => handleTagClick('firstName')}
-            onClose={() => handleTagClose('First Name', 'firstName')}
-          />
-          <Tag
-            value="lastName"
-            fallback={fallbacks.lastName}
-            isClosable={true}
-            onClick={() => handleTagClick('lastName')}
-            onClose={() => handleTagClose('Last Name', 'lastName')}
-          />
-          <Tag
-            value="email"
-            fallback={fallbacks.email}
-            isClosable={true}
-            onClick={() => handleTagClick('email')}
-            onClose={() => handleTagClose('Email Address', 'email')}
-          />
-        </div>
-      </div>
+      <div className="main-content">
+        <div className="left-panel">
+          <h1>Quick <span className="react-brand">React</span> Playground</h1>
 
-      <div className="input-section">
-        <InputLikeDiv
-          placeholder="Type something like: Hello {{firstName}}"
-          value={inputValue}
-          onChange={setInputValue}
-          fallbacks={fallbacks}
-          onTagClick={handleTagClick}
-        />
+          <div className="tags-demo">
+            <h3>Test Tags:</h3>
+            <div className="tags-container">
+              <Tag
+                value="firstName"
+                fallback={fallbacks.firstName}
+                isClosable={true}
+                onClick={() => handleTagClick('firstName')}
+                onClose={() => handleTagClose('First Name', 'firstName')}
+              />
+              <Tag
+                value="lastName"
+                fallback={fallbacks.lastName}
+                isClosable={true}
+                onClick={() => handleTagClick('lastName')}
+                onClose={() => handleTagClose('Last Name', 'lastName')}
+              />
+              <Tag
+                value="email"
+                fallback={fallbacks.email}
+                isClosable={true}
+                onClick={() => handleTagClick('email')}
+                onClose={() => handleTagClose('Email Address', 'email')}
+              />
+            </div>
+          </div>
+
+          <div className="input-section">
+            <InputLikeDiv
+              placeholder="Type something like: Hello {{firstName}}"
+              value={inputValue}
+              onChange={setInputValue}
+              fallbacks={fallbacks}
+              onTagClick={handleTagClick}
+            />
+          </div>
+        </div>
+
+        <div className="right-panel">
+          <h3>Live State (JSON)</h3>
+          <pre className="state-display"><code>{stateJSON}</code></pre>
+        </div>
       </div>
     </div>
   );
