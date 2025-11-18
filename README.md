@@ -1,5 +1,9 @@
 # ContentEditable Situation
 
+
+https://github.com/user-attachments/assets/f000820a-8330-4417-a037-7e7f7ce89f54
+
+
 A minimal React/Vue demo illustrating the hidden complexity behind seemingly simple "dynamic variable" editors. 
 
 This project demonstrates how typing, deletion, and chip insertion create DOM mutations that frameworks can't always safely reconcile, exposing the need for custom DOM-managed islands.
