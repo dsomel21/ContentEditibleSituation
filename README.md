@@ -20,6 +20,14 @@ In this demo, you'll see that when somethhing like `someStateThatIsGoingToChange
 
 That loss of automatic "reactivity" is **one** of the (many) core challenges.
 
+## What If You Do It Without Mutating The Dom
+
+That was the first thing I tried:
+
+<img width="773" height="362" alt="More issues" src="https://github.com/user-attachments/assets/6df48bf5-7618-494a-a88f-effe37e3b0a2" />
+
+I will add an explanation here later (I can't remember all the details), but... this was causing a LOT of headaches. Things like, caret jumping to the beginning, text inside the `div contenteditible` doubling up, etc.
+
 ## Local Testing
 
 ### Prerequisites
