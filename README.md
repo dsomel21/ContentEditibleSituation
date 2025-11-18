@@ -1,25 +1,24 @@
 # ContentEditable Situation
 
-
 https://github.com/user-attachments/assets/f000820a-8330-4417-a037-7e7f7ce89f54
 
+> A minimal React/Vue demo illustrating the hidden complexity behind seemingly simple "dynamic variable" editors. 
 
-A minimal React/Vue demo illustrating the hidden complexity behind seemingly simple "dynamic variable" editors. 
+## History
 
-This project demonstrates how typing, deletion, and chip insertion create DOM mutations that frameworks can't always safely reconcile, exposing the need for custom DOM-managed islands.
+Back in 2024, I was working on a feature at Vidyard for building out Dynamic Variables. Building the front-end for it was complex and I built this demo to show you some of the challanges I faced.
 
-## What This Demonstrates
+This was in Vue, but in this demo, you'll see that it happens in React, too!
 
-When building editors that allow users to type text and insert dynamic variables (like `{{firstName}}`), the interaction between:
-- User typing
-- Chip/tag insertion
-- Deletion operations
+## The Situation
 
-...creates complex DOM mutations that React/Vue's virtual DOM can't always safely reconcile. This project shows why custom DOM-managed islands are necessary for such use cases.
+So... it helps to think of this demo as a tiny "tokenized editor" living inside a `contentEditable`. When you type something like {{firstName}}, the system swaps that text for a custom `<Tag value="firstName" onClick={} fallback={someStateThatIsGoingToChange}/>` component—a real component mounted directly into the DOM.
 
-## How It Works
+The tricky part is that a `contentEditable` area doesn't behave like the rest of React. The browser is constantly mutating the DOM on its own as the user types, moves the cursor, deletes characters, or pastes content. To keep things working, the editor has to tear down and rebuild pieces of DOM manually, and I didn't realize at the time... but the Tag gets mounted as its own little isolated React root...
 
-Type text like `Hello {{firstName}}` and watch as the `{{firstName}}` pattern is automatically converted into a Tag component. The challenge lies in maintaining the DOM state while allowing natural typing behavior without breaking the framework's reconciliation process.
+In this demo, you'll see that when somethhing like `someStateThatIsGoingToChange`  our Tag doesn't _react_... We have a an updated value for out `fallback` prop... but inside of the `contenteditible`... it doesn't reflect that change.
+
+That loss of automatic "reactivity" is **one** of the (many) core challenges.
 
 ## Local Testing
 
