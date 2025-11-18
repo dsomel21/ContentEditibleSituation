@@ -122,7 +122,7 @@ function InputLikeDiv({ placeholder, value, onChange, fallbacks, onTagClick }) {
   // Update DOM when value changes - but only if it contains {{variable}} patterns
   useEffect(() => {
     if (!isUpdatingRef.current && divRef.current && /\{\{\w+\}\}/.test(value)) {
-      renderValue(value);
+      renderValue(value, fallbacks);
     }
   }, [value]);
 
